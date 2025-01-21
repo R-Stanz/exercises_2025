@@ -1,0 +1,20 @@
+Total of Doctors: 3 =>
+
+Name Bytes Length: 13
+Name: Rafael Castro
+License Code: 33432-KS
+Birthdate: 02-25-1980
+Speciality: orthopaedics
+	-----
+Name Bytes Length: 10
+Name: Seth White
+License Code: 5432-NC
+Birthdate: 09-10-1995
+Speciality: psychiatry
+	-----
+Name Bytes Length: 14
+Name: Hannah Lontana
+License Code: 12414325-NY
+Birthdate: 07-04-2001
+Speciality: general
+	-----
