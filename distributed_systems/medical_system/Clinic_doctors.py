@@ -2,13 +2,13 @@ from Clinic import Clinic
 from Doctor import Doctor
 
 class Clinic_doctors:
-    def __init__(self, clinic, destiny):
+    def __init__(self, clinic, remote):
         self.clinic = clinic
-        self.destiny = destiny
+        self.remote = remote
 
     def send_infos(self):
         doctors_len_bytes = str(len(self.clinic.doctors)).encode()
-        self.destiny.write(doctors_len_bytes + b"\n")
+        self.remote.write(doctors_len_bytes + b"\n")
 
         for doctor in self.clinic.doctors:
             full_name_bytes = doctor.full_name.encode()
@@ -17,18 +17,19 @@ class Clinic_doctors:
             birthdate_bytes = doctor.birthdate.encode()
             speciality_bytes = doctor.speciality.encode()
 
-            self.destiny.write(full_name_bytes_len + b" ")
-            self.destiny.write(full_name_bytes + b" ")
-            self.destiny.write(license_code_bytes + b" ")
-            self.destiny.write(birthdate_bytes + b" ")
-            self.destiny.write(speciality_bytes + b"\n")
+            self.remote.write(full_name_bytes_len + b";")
+            self.remote.write(full_name_bytes + b";")
+            self.remote.write(license_code_bytes + b";")
+            self.remote.write(birthdate_bytes + b";")
+            self.remote.write(speciality_bytes + b"\n")
 
             '''
-            self.destiny.write(b"Name Bytes Length: " + full_name_bytes_len + b"\n")
-            self.destiny.write(b"Name: " + full_name_bytes + b"\n")
-            self.destiny.write(b"License Code: " + license_code_bytes + b"\n")
-            self.destiny.write(b"Birthdate: " + birthdate_bytes + b"\n")
-            self.destiny.write(b"Speciality: " + speciality_bytes + b"\n\t-----\n")
+            self.remote.write(b"Name Bytes Length: " + full_name_bytes_len + b"\n")
+            self.remote.write(b"Name: " + full_name_bytes + b"\n")
+            self.remote.write(b"License Code: " + license_code_bytes + b"\n")
+            self.remote.write(b"Birthdate: " + birthdate_bytes + b"\n")
+            self.remote.write(b"Speciality: " + speciality_bytes + b"\n\t-----\n")
             '''
 
-        self.destiny.flush()
+        self.remote.flush()
+

@@ -46,4 +46,31 @@ class Clinic:
         doctor = self.make_appointment(doctors_name)
         doctor.appointments += 1
 
+    def add_many_doctors(self, full_str):
+        total_doctors = ''
+        i = 0
+        c = full_str[i]
+        while c != '\n':
+            total_doctors += c
+            i += 1
+            c = full_str[i]
 
+        total_doctors = int(total_doctors)
+        for d in range(total_doctors):
+            i += 1
+            c = full_str[i]
+            init = i
+            attributes = []
+            while c != '\n':
+                if c == ';':
+                    attribute = full_str[init:i]
+                    attributes.append(attribute)
+                    init = i+1
+                i += 1
+                c = full_str[i]
+
+            attribute = full_str[init:i]
+            attributes.append(attribute)
+
+            full_name_bytes_len, full_name, license_code, birthdate, speciality = attributes
+            self.add_doctor(full_name, license_code, birthdate, speciality)
