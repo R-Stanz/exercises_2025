@@ -1,3 +1,4 @@
+import sys
 from socket import socket, AF_INET, SOCK_STREAM
 from Clinic import Clinic
 
@@ -5,17 +6,17 @@ from Clinic import Clinic
 clinic = Clinic("Luiza Redes Quixada", "Rodoviaria", "85 8998-23221")
 
 s = socket(AF_INET, SOCK_STREAM)
-s.bind(('', 11322))
-s.listen()
+s.bind(('127.0.0.1', 12345))
+s.listen(1)
+
 conn, add = s.accept()
 
-data = ""
-try:
-    while True:
-        data += conn.recv(1024).decode()
-        if not data:
-            break
-finally:
-    conn.close() 
+output = sys.stdout.buffer
+data = conn.recv(1024)
+while data:
+    output.write(data)
+    data = conn.recv(1024)
 
-clinic.add_many_doctors(data)
+output.flush()
+conn.close()
+s.close()
