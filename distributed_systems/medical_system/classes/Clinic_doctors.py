@@ -88,12 +88,20 @@ class ClinicIO:
     def send_tcp(self, socket):
         self.doctors_stream.seek(0)
 
-        encoded_msg = self.doctors_stream.getvalue()
-
-        data = encoded_msg.read(1024)
+        data = self.doctors_stream.read(1024)
         while data:
             socket.send(data)
-            data = encoded_msg.read(1024)
+            data = self.doctors_stream.read(1024)
+
+    def get_tcp(self, conn):
+        input_stream = BytesIO()
+        data = conn.recv(1024)
+        while data:
+            input_stream.write(data)
+            data = conn.recv(1024)
+
+        self.add_many_doctors(input_stream)
+        input_stream.close()
 
 
 

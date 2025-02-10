@@ -1,32 +1,4 @@
-from io import BytesIO
-from hashlib import md5
-
-def get_file_as_stream(file_name):
-    stream = BytesIO()
-    file = open(file_name, 'rb')
-
-    data = file.read(1024)
-    while data:
-        stream.write(data)
-        data = file.read(1024)
-
-    file.close()
-    stream.seek(0)
-
-    return stream
-
-
-def get_file_md5(file_name):
-    md5_obj = md5()
-    file = open(file_name, 'rb')
-
-    data = file.read(1024)
-    while data:
-        md5_obj.update(data)
-        data = file.read(1024)
-
-    file.close()
-    return md5_obj.hexdigest()
+from functions import md5_hashing, get_file_as_stream
 
 
 def test_empty_clinic_file_output(empty_clinic_io):
