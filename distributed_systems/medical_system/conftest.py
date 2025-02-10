@@ -26,12 +26,3 @@ def filled_clinic_output():
     message += "14;Hannah Lontana;12414325-NY;07-04-2001;general\n"
 
     return message
-
-
-@pytest.fixture()
-def std_cp_clinic_io(filled_clinic_io, empty_clinic_io):
-    empty_clinic_io.capture_stdin()
-    filled_clinic_io.stdout()
-    empty_clinic_io.stop_capture()
-
-    return empty_clinic_io

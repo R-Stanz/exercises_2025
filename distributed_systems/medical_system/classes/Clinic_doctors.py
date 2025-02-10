@@ -48,22 +48,40 @@ class ClinicIO:
 
 
 
-    def write_file(self, file_name = ''):
+    def write(self, file_name = ''):
         self.doctors_stream.seek(0)
-        if not file_name:
-            file_name = self.clinic.name + "_doctors.bin"
+        file_name = self.get_file_name(file_name)
 
         file = open(file_name, 'wb')
         encoded_msg = self.doctors_stream.getvalue()
-        file.write(encoded_msg.decode())
-        flie.close()
+        file.write(encoded_msg)
+        file.truncate()
+        file.close()
 
-    def read_file(self, file_name = ''):
+    def read(self, input_file_name = '', output_file_name=''):
+
+        input_file_name = self.get_file_name(input_file_name)
+
+        file = open(input_file_name, 'rb')
+        file_stream = BytesIO()
+        data = file.read(1024)
+        while data:
+            file_stream.write(data)
+            data = file.read(1024)
+
+        file.close()
+        self.add_many_doctors(file_stream)
+
+        output_file_name = self.get_file_name(output_file_name)
+        self.write(output_file_name)
+
+    def get_file_name(self, file_name):
         if not file_name:
             file_name = self.clinic.name + "_doctors.bin"
+        file_name = file_name.lower()
+        file_name = file_name.replace(" ", "_")
 
-        file = open(file_name, 'rb')
-        self.add_many_doctors(file)
+        return file_name
 
 
 
