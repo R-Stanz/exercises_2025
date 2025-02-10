@@ -37,11 +37,11 @@ class ClinicIO:
     def capture_stdin(self):
         self._stdout = sys.stdout
         self._capture_stream = BytesIO()
-        self._wrapped_stdout = TextIOWrapper(self._capture_stream, encoding='utf-8')
+        self._wrapped_stdout = TextIOWrapper(self._capture_stream)
         sys.stdout = self._wrapped_stdout
 
     def stop_capture(self):
-        self._wrapped_stdout.flush()  # Ensure buffer is flushed
+        self._wrapped_stdout.flush()
         captured_output = self._capture_stream
         sys.stdout = self._stdout
         self.add_many_doctors(captured_output)
