@@ -1,4 +1,4 @@
-from Doctor import Doctor
+from classes.Doctor import Doctor
 
 class Psychiatrist(Doctor):
     def __init__(self, full_name, license_code, birthdate):
