@@ -75,7 +75,7 @@ class ClinicIO:
         output_file_name = self.get_file_name(output_file_name)
         self.write(output_file_name)
 
-    def get_file_name(self, file_name):
+    def get_file_name(self, file_name=''):
         if not file_name:
             file_name = self.clinic.name + "_doctors.bin"
         file_name = file_name.lower()
