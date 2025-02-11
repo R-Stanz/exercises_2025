@@ -97,7 +97,7 @@ class ClinicIO:
 
     def send_serialized_clinic(self, socket):
         stream = self.clinic.get_serialized_stream()
-        self.send_stream_on_tcp(socket, stream)
+        self.send_stream(socket, stream)
 
     def load_serialized_clinic(self, socket):
         stream = self.load_stream(socket)
