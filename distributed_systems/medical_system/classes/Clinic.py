@@ -3,6 +3,8 @@ from classes.specialities.Ophthalmology import Ophthalmologist
 from classes.specialities.Orthopedics import Orthopedist
 from classes.specialities.Psychiatry import Psychiatrist
 from classes.specialities.Hematology import Hematologist
+from io import BytesIO
+from pickle import dumps
 
 class Clinic:
     def __init__(self, name, address, phone):
@@ -49,3 +51,10 @@ class Clinic:
     def make_appointment(self, patient_name, date, doctors_name):
         doctor = self.make_appointment(doctors_name)
         doctor.appointments += 1
+
+    def get_serialized_stream(self):
+        stream = BytesIO()
+        serialized_bytes = dumps(self)
+        stream.write(serialized_bytes)
+
+        return stream

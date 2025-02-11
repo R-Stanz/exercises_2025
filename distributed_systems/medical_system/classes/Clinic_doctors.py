@@ -1,6 +1,7 @@
 import sys
 from pickle import dumps, loads
 from io import BytesIO, StringIO, TextIOWrapper
+from socket import SHUT_WR
 
 class ClinicIO:
     def __init__(self, clinic):
@@ -59,7 +60,6 @@ class ClinicIO:
         file.close()
 
     def read(self, input_file_name = '', output_file_name=''):
-
         input_file_name = self.get_file_name(input_file_name)
 
         file = open(input_file_name, 'rb')
@@ -86,22 +86,42 @@ class ClinicIO:
 
 
     def send_tcp(self, socket):
-        self.doctors_stream.seek(0)
+        self.send_stream(socket, self.doctors_stream)
 
-        data = self.doctors_stream.read(1024)
+    def get_tcp(self, socket):
+        stream = self.load_stream(socket)
+        self.add_many_doctors(stream)
+        stream.close()
+
+
+
+    def send_serialized_clinic(self, socket):
+        stream = self.clinic.get_serialized_stream()
+        self.send_stream_on_tcp(socket, stream)
+
+    def load_serialized_clinic(self, socket):
+        stream = self.load_stream(socket)
+        self.clinic = loads(stream.getvalue()) 
+        self.doctors_stream = self.doctors_to_bytes_stream()
+
+
+
+    def send_stream(self, socket, stream):
+        stream.seek(0)
+        data = stream.read(1024)
         while data:
             socket.send(data)
-            data = self.doctors_stream.read(1024)
+            data = stream.read(1024)
 
-    def get_tcp(self, conn):
-        input_stream = BytesIO()
-        data = conn.recv(1024)
+    def load_stream(self, socket):
+        stream = BytesIO()
+        data = socket.recv(1024)
         while data:
-            input_stream.write(data)
-            data = conn.recv(1024)
+            stream.write(data)
+            data = socket.recv(1024)
 
-        self.add_many_doctors(input_stream)
-        input_stream.close()
+        stream.seek(0)
+        return stream
 
 
 
