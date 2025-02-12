@@ -1,6 +1,7 @@
 from functions import rmi_server
-from functions import rmi_client_appointment_on_empty_schedule
-from functions import rmi_client_repeated_appointment
+from functions import rmi_client_appointment_empty_schedule
+from functions import rmi_client_appointment_repeated
+from functions import rmi_client_appointment_clash
 
 from concurrent.futures import ThreadPoolExecutor
 from time import sleep
@@ -23,10 +24,14 @@ def make_an_appointment(rmi_client, selected_doctor):
         return has_booked
 
 
-def test_rmi_appointment_on_empty_schedule(filled_clinic_io):
+def test_rmi_appointment_empty_schedule(filled_clinic_io):
     selected_doctor = filled_clinic_io.clinic.doctors[0]
-    assert make_an_appointment(rmi_client_appointment_on_empty_schedule, selected_doctor)
+    assert make_an_appointment(rmi_client_appointment_empty_schedule, selected_doctor)
 
-def test_rmi_repeated_appointment(filled_clinic_io):
+def test_rmi_appointment_repeated(filled_clinic_io):
     selected_doctor = filled_clinic_io.clinic.doctors[0]
-    assert make_an_appointment(rmi_client_repeated_appointment, selected_doctor)
+    assert make_an_appointment(rmi_client_appointment_repeated, selected_doctor)
+
+def test_rmi_client_appointment_clash(filled_clinic_io):
+    selected_doctor = filled_clinic_io.clinic.doctors[0]
+    assert make_an_appointment(rmi_client_appointment_clash, selected_doctor)

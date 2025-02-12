@@ -150,22 +150,39 @@ def rmi_server(doctor, pyro_ns_process):
     daemon.requestLoop()
     print("Server: Getting Requests")
 
-def rmi_client_appointment_on_empty_schedule():
+def get_rmi_appointment_poxy():
     sleep(0.01)
     print("Client: Getting poxy")
-    book_doctor = Pyro5.api.Proxy("PYRONAME:doctor.rmi")
+    return Pyro5.api.Proxy("PYRONAME:doctor.rmi")
+
+def rmi_client_appointment_empty_schedule():
+    book_doctor = get_rmi_appointment_poxy()
+
     print("Client: Making Remote Object Method Call")
     has_booked = book_doctor.make_an_appointment("Kevin", "02-11-2025", "12:50-PM")
+
     print("Client: Call Done! Answer: " + str(has_booked))
     return has_booked
 
-def rmi_client_repeated_appointment():
-    sleep(0.01)
-    print("Client: Getting poxy")
-    book_doctor = Pyro5.api.Proxy("PYRONAME:doctor.rmi")
+def rmi_client_appointment_repeated():
+    book_doctor = get_rmi_appointment_poxy()
+
     print("Client: Making Remote Object Method Call")
-    has_booked = book_doctor.make_an_appointment("Kevin", "02-11-2025", "12:50-PM")
-    print("Client: Making Remote Object Method Repeated Call")
-    has_booked = book_doctor.make_an_appointment("Kevin", "02-11-2025", "12:50-PM")
+    book_doctor.make_an_appointment("Kevin", "02-11-2025", "12:50-PM")
+
+    print("client: making remote object method repeated call")
+    has_booked = book_doctor.make_an_appointment("kevin", "02-11-2025", "12:50-pm")
+
     print("Client: Call Done! Answer: " + str(has_booked))
     return has_booked
+
+def rmi_client_appointment_clash():
+    book_doctor = get_rmi_appointment_poxy()
+
+    print("Client: Making Remote Object Method Call")
+    book_doctor.make_an_appointment("Kevin", "02-11-2025", "12:50-PM")
+
+    print("client: making remote object method repeated call")
+    has_booked = book_doctor.make_an_appointment("David", "02-11-2025", "12:50-pm")
+    return has_booked
+
