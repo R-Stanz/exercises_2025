@@ -170,8 +170,8 @@ def rmi_client_appointment_repeated():
     print("Client: Making Remote Object Method Call")
     book_doctor.make_an_appointment("Kevin", "02-11-2025", "12:50-PM")
 
-    print("client: making remote object method repeated call")
-    has_booked = book_doctor.make_an_appointment("kevin", "02-11-2025", "12:50-pm")
+    print("Client: making remote object method repeated call")
+    has_booked = book_doctor.make_an_appointment("kevin", "02-11-2025", "12:50-PM")
 
     print("Client: Call Done! Answer: " + str(has_booked))
     return has_booked
@@ -182,7 +182,16 @@ def rmi_client_appointment_clash():
     print("Client: Making Remote Object Method Call")
     book_doctor.make_an_appointment("Kevin", "02-11-2025", "12:50-PM")
 
-    print("client: making remote object method repeated call")
-    has_booked = book_doctor.make_an_appointment("David", "02-11-2025", "12:50-pm")
+    print("Client: making remote object method call (To Be Clashing)")
+    has_booked = book_doctor.make_an_appointment("David", "02-11-2025", "12:50-PM")
     return has_booked
 
+def rmi_client_appointment_2_in_a_day():
+    book_doctor = get_rmi_appointment_poxy()
+
+    print("Client: Making Remote Object Method Call")
+    book_doctor.make_an_appointment("Kevin", "02-11-2025", "12:50-PM")
+
+    print("Client: making remote object method call (Second In The Same Day)")
+    has_booked = book_doctor.make_an_appointment("David", "02-11-2025", "12:50-AM")
+    return has_booked
