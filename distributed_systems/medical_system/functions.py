@@ -1,8 +1,13 @@
 from socket import socket, AF_INET, SOCK_STREAM, SHUT_WR, SOL_SOCKET, SO_REUSEADDR
+from classes.Doctor import Doctor
+from threading import Thread
+from subprocess import Popen
+from signal import SIGINT
 from io import BytesIO
 from hashlib import md5
 from io import BytesIO
 from time import sleep
+import Pyro5.api
 
 def get_file_as_stream(file_name):
     stream = BytesIO()
@@ -117,3 +122,38 @@ def serialization_client(clinic_io):
     final_clinic_md5 = clinic_to_serialized_md5(clinic_io.clinic)
 
     return origininal_clinic_md5 == final_clinic_md5
+
+
+def shutdown_service(daemon, time_limit, pyro_ns_process):
+    sleep(time_limit)
+    daemon.shutdown()
+    print("Server: Shot Down")
+    sleep(time_limit*1.5)
+    print("Shuting Down Pyro Name-Service")
+    pyro_ns_process.send_signal(SIGINT)
+    pyro_ns_process.wait()
+
+def rmi_server(doctor, pyro_ns_process):
+    daemon = Pyro5.server.Daemon()         
+    ns = Pyro5.api.locate_ns()            
+    uri = daemon.register(doctor)
+    ns.register("doctor.rmi", uri)
+
+    print("Server: Ready.")
+    time_limit = 0.01
+    print(f"Server: Creating Thread With A Timeout Of {time_limit}s")
+    thread = Thread(target=shutdown_service, args=(daemon, time_limit, pyro_ns_process))
+    print("Server: Thread declared")
+    thread.start()
+    print("Server: Shut Down Thread Started")
+    daemon.requestLoop()
+    print("Server: Getting Requests")
+
+def rmi_client_appointment_on_empty_schedule():
+    sleep(0.01)
+    print("Client: Getting poxy")
+    book_doctor = Pyro5.api.Proxy("PYRONAME:doctor.rmi")
+    print("Client: Making Remote Object Method Call")
+    has_booked = book_doctor.make_an_appointment("Kevin", "02-11-2025", "12:50-PM")
+    print("Client: Call Done! Answer: " + str(has_booked))
+    return has_booked

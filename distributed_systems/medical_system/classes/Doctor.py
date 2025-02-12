@@ -1,4 +1,5 @@
 from classes.Appointment import Appointment
+from Pyro5.api import expose
 
 class Doctor(Appointment):
     def __init__(self, full_name, license_code, birthdate):
@@ -7,10 +8,54 @@ class Doctor(Appointment):
         self.license_code = license_code
         self.birthdate = birthdate
         self.speciality = "general"
-        self.appointments = 0
+        self.appointments_time = {}
+        self.appointments = []
 
-    def make_an_appointment(self):
-        self.appointments += 1
+
+    @expose
+    def make_an_appointment(self, patient, day, time):
+        patient = patient.lower()
+        if self.is_vacanct_time(day, time):
+            if self.is_vacant_day(day):
+                self.appointments_time[day] = {}
+            self.appointments_time[day][time] = patient
+            return True
+
+        if self.time_has_same_patient(day, time, patient):
+            return True
+
+        return False
+
+
+    @expose
+    def time_has_same_patient(self, day, time, patient):
+        appointments = self.appointments_time
+        if day in appointments and \
+            time in appointments[day] and \
+            patient in appointments[day][time]:
+
+                return True
+        return False
+
+
+    @expose
+    def is_vacanct_time(self, day, time):
+        if self.is_vacant_day(day):
+            return True
+
+        if time in sefl.appointments_time[day]:
+            return False
+
+        return True
+
+
+    @expose
+    def is_vacant_day(self, day):
+        if day in self.appointments_time:
+            return False
+        return True
+
+
 
     def __eq__(self, other):
         if not isinstance(other, Doctor):
