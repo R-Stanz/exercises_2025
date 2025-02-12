@@ -129,9 +129,10 @@ def shutdown_service(daemon, time_limit, pyro_ns_process):
     daemon.shutdown()
     print("Server: Shot Down")
     sleep(time_limit*1.5)
-    print("Shuting Down Pyro Name-Service")
+    print("Pyro Name-Service: Shuting Down")
     pyro_ns_process.send_signal(SIGINT)
     pyro_ns_process.wait()
+    print("Pyro Name-Service: Shot Down")
 
 def rmi_server(doctor, pyro_ns_process):
     daemon = Pyro5.server.Daemon()         
@@ -140,7 +141,7 @@ def rmi_server(doctor, pyro_ns_process):
     ns.register("doctor.rmi", uri)
 
     print("Server: Ready.")
-    time_limit = 0.01
+    time_limit = 0.1
     print(f"Server: Creating Thread With A Timeout Of {time_limit}s")
     thread = Thread(target=shutdown_service, args=(daemon, time_limit, pyro_ns_process))
     print("Server: Thread declared")
@@ -154,6 +155,17 @@ def rmi_client_appointment_on_empty_schedule():
     print("Client: Getting poxy")
     book_doctor = Pyro5.api.Proxy("PYRONAME:doctor.rmi")
     print("Client: Making Remote Object Method Call")
+    has_booked = book_doctor.make_an_appointment("Kevin", "02-11-2025", "12:50-PM")
+    print("Client: Call Done! Answer: " + str(has_booked))
+    return has_booked
+
+def rmi_client_repeated_appointment():
+    sleep(0.01)
+    print("Client: Getting poxy")
+    book_doctor = Pyro5.api.Proxy("PYRONAME:doctor.rmi")
+    print("Client: Making Remote Object Method Call")
+    has_booked = book_doctor.make_an_appointment("Kevin", "02-11-2025", "12:50-PM")
+    print("Client: Making Remote Object Method Repeated Call")
     has_booked = book_doctor.make_an_appointment("Kevin", "02-11-2025", "12:50-PM")
     print("Client: Call Done! Answer: " + str(has_booked))
     return has_booked

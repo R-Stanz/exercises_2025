@@ -43,7 +43,7 @@ class Doctor(Appointment):
         if self.is_vacant_day(day):
             return True
 
-        if time in sefl.appointments_time[day]:
+        if time in self.appointments_time[day]:
             return False
 
         return True
