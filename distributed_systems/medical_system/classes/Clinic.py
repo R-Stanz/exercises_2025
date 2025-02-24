@@ -14,6 +14,8 @@ class Clinic:
         self.specialities = ["general", "ophthalmology", "orthopaedics", "psychiatry", "hematology"]
         self.doctors = []
 
+
+
     def build_doctor(self, full_name, license_code, birthdate, speciality):
         doctor = ""
         speciality = speciality.lower()
@@ -30,27 +32,62 @@ class Clinic:
 
         return doctor
 
+
+
     def add_doctor(self, full_name, license_code, birthdate, speciality):
-        doctor = self.build_doctor(full_name, license_code, birthdate, speciality)
-        if not doctor or doctor in self.doctors:
-            return
+        doctor = self.doctor_by_license(license_code)
+        if doctor:
+            return doctor
         
+        doctor = self.build_doctor(full_name, license_code, birthdate, speciality)
         self.doctors.append(doctor)
         return doctor
+
+
 
     def doctor_by_name(self, doctors_name):
         for doctor in self.doctors:
             if doctor.full_name == doctors_name:
                 return doctor
 
+
+
+    def rm_doctor_by_license(self, license_code):
+        filtered_doctors = []
+        removed_doctor = {}
+        for doc in self.doctors:
+            if doc.license_code == license_code:
+                removed_doctor = doc
+            else:
+                filtered_doctors.append(doc)
+
+        self.doctors = filtered_doctors
+        return removed_doctor
+
+
+
+    def update_doctor_by_license(self, full_name, license_code, birthdate, speciality):
+        for i, doc in enumerate(self.doctors):
+            if doc.license_code == license_code:
+                doctor = self.build_doctor(full_name, license_code, birthdate, speciality)
+                self.doctors[i] = doctor
+                return doctor
+        return
+
+
+
     def doctor_by_license(self, license_code):
         for doctor in self.doctors:
             if doctor.license_code == license_code:
                 return doctor
 
+
+
     def make_appointment(self, patient_name, date, doctors_name):
         doctor = self.make_appointment(doctors_name)
         doctor.appointments += 1
+
+
 
     def get_serialized_stream(self):
         stream = BytesIO()

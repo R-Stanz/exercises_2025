@@ -3,8 +3,8 @@ from Pyro5.api import expose
 
 class Doctor(Appointment):
     def __init__(self, full_name, license_code, birthdate):
-        self.first_name = full_name[0]
-        self.full_name = full_name
+        self.first_name = full_name.split(" ")[0].lower()
+        self.full_name = full_name.lower()
         self.license_code = license_code
         self.birthdate = birthdate
         self.speciality = "general"
@@ -56,6 +56,13 @@ class Doctor(Appointment):
         return True
 
 
+    def dict(self):
+        return { 
+            "full_name" : self.full_name,
+            "license_code" : self.license_code,
+            "birthdate" : self.birthdate,
+            "speciality" : self.speciality
+        }
 
     def __eq__(self, other):
         if not isinstance(other, Doctor):
